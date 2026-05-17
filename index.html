@@ -1,25 +1,55 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta http-equiv="Content-type" content="text/html" charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sample HTML5 File</title>
+    <title>Froot Wars</title>
+    <script type="module" src="./assets/js/jquery.min.js"></script>
+    <script type="module" src="./assets/js/game.js"></script>
+    <link
+      rel="stylesheet"
+      href="./assets/css/style.css"
+      type="text/css"
+      media="screen"
+      charset="utf-8"
+    />
   </head>
   <body>
-    <canvas
-      width="640"
-      height="480"
-      id="testcanvas"
-      style="border: black 1px solid"
-    >
-      Your browser does not support HTML5 Canvas. Please shift to another
-      browser.
-    </canvas>
-    <img src="./images/spaceship.png" id="spaceship" />
-    <!-- <audio src="./audio/coolkid - Interrobang.ogg" controls="controls">
-      Your browser does not support HTML5 Audio. Please shift to a newer
-      browser.
-    </audio> -->
-    <script type="module" src="./index.js"></script>
+    <div id="gameContainer">
+      <canvas id="gameCanvas" width="640" height="480" class="gameLayer">
+      </canvas>
+
+      <div id="scoreScreen" class="gameLayer">
+        <img id="toggleMusic" src="./images/icons/sound.png" />
+        <img src="./images/icons/prev.png" />
+        <span id="score">Score: 0</span>
+      </div>
+
+      <div id="gameStartScreen" class="gameLayer">
+        <img src="./images/icons/play.png" alt="Play Game" /><br />
+        <img src="images/icons/settings.png" alt="Settings" />
+      </div>
+
+      <div id="levelSelectScreen" class="gameLayer"></div>
+
+      <div id="loadingScreen" class="gameLayer">
+        <div id="loadingMessage"></div>
+      </div>
+
+      <div id="endingScreen" class="gameLayer">
+        <div>
+          <p id="endingMessage">The Level Is Over Message</p>
+          <p id="playCurrentLevel">
+            <img src="./images/icons/prev.png" />Replay Current Level
+          </p>
+          <p id="playNexLevel">
+            <img src="./images/icons/next.png" />Play Next Level
+          </p>
+          <p id="showLevelScreen">
+            <img src="./images/icons/return.png" />Return to Level Screen
+          </p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
