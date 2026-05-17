@@ -6,6 +6,10 @@
     <title>Froot Wars</title>
     <script type="module" src="./assets/js/jquery.min.js"></script>
     <script type="module" src="./assets/js/game.js"></script>
+    <script type="module">
+      import { game } from "./assets/js/game.js";
+      window.game = game;
+    </script>
     <link
       rel="stylesheet"
       href="./assets/css/style.css"
@@ -26,7 +30,11 @@
       </div>
 
       <div id="gameStartScreen" class="gameLayer">
-        <img src="./images/icons/play.png" alt="Play Game" /><br />
+        <img
+          src="./images/icons/play.png"
+          alt="Play Game"
+          onclick="game.showLevelScreen()"
+        /><br />
         <img src="images/icons/settings.png" alt="Settings" />
       </div>
 
