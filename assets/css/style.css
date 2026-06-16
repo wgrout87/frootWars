@@ -37,3 +37,17 @@
   height: 64px;
   border: 0;
 }
+
+/* Loading Screen */
+#loadingScreen {
+  background: rgba(100, 100, 100, 0.3);
+}
+
+#loadingMessage {
+  margin-top: 400px;
+  text-align: center;
+  height: 48px;
+  color: white;
+  background: url(../../images/loader.gif) no-repeat center;
+  font: 12px Arial;
+}
