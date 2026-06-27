@@ -31,24 +31,30 @@ export var game = {
     init: function () {
         levels.init();
         loader.init();
+        mouse.init();
 
+        // Hide all game layers and display the start screen
         $('.gameLayer').hide();
         $('#gameStartScreen').show();
 
+        // Get handler for game canvas and context
         game.canvas = $('#gameCanvas')[0];
         game.context = game.canvas.getContext('2d')
     },
+
     showLevelScreen: function () {
         $('.gameLayer').hide();
         $('#levelSelectScreen').show('slow');
     },
+
     // Game mode
     mode: 'intro',
+
     // X & Y Coordinates of the slingshot
     slingshotX: 140,
     slingshotY: 280,
+
     start: function () {
-        console.log("Started!");
         $('.gameLayer').hide();
         // Display the game canvas and score
         $('#gameCanvas').show();
@@ -59,9 +65,74 @@ export var game = {
         game.ended = false;
         game.animationFrame = window.requestAnimationFrame(game.animate, game.canvas);
     },
-    handlePanning: function () {
-        game.offsetLeft++; // Temporary placeholder - keep panning to the right
+
+    // Maximum panning speed per frame in pixels
+    maxSpeed: 3,
+
+    // Minimum and Maximum panning offset
+    minOffset: 0,
+    maxOffset: 300,
+
+    // Current panning offset
+    offsetLeft: 0,
+
+    // The game score
+    score: 0,
+
+    // Pan the screen to center on newCenter
+    panTo: function (newCenter) {
+        if (Math.abs(newCenter - game.offsetLeft - game.canvas.width / 4) > 0 && game.offsetLeft <= game.maxOffset && game.offsetLeft >= game.minOffset) {
+            var deltaX = Math.round((newCenter - game.offsetLeft - game.canvas.width / 4) / 2);
+            if (deltaX && Math.abs(deltaX) > game.maxSpeed) {
+                deltaX = game.maxSpeed * Math.abs(deltaX) / deltaX
+            }
+            game.offsetLeft += deltaX;
+        } else {
+            return true;
+        }
+        if (game.offsetLeft < game.minOffset) {
+            game.offsetLeft = game.minOffset;
+            return true;
+        } else if (game.offsetLeft > game.maxOffset) {
+            game.offsetLeft = game.maxOffset;
+            return true;
+        }
+        return false;
     },
+
+    handlePanning: function () {
+        if (game.mode == 'intro') {
+            if (game.panTo(700)) {
+                game.mode = "load-next-hero";
+            }
+        }
+
+        if (game.mode == 'wait-for-firing') {
+            if (mouse.dragging) {
+                game.panTo(mouse.x + game.offsetLeft)
+            } else {
+                game.panTo(game.slingshotX);
+            }
+        }
+
+        if (game.mode == 'load-next-hero') {
+            // TODO:
+            // Check if any villains are alive, if not end the level (success)
+            // Check if there are any more heroes left to load, if not end the level (failure)
+            // Load the hero and set mode to wait-for-firing
+            game.mode = "wait-for-firing";
+        }
+
+        if (game.mode == "firing") {
+            game.panTo(game.slingshotX);
+        }
+
+        if (game.mode == "fired") {
+            // TODO:
+            // Pan to wherever the hero currently is
+        }
+    },
+
     animate: function () {
         // Animate the background
         game.handlePanning();
@@ -80,7 +151,8 @@ export var game = {
         if (!game.ended) {
             game.animationFrame = window.requestAnimationFrame(game.animate, game.canvas);
         }
-    }
+    },
+
 }
 
 var levels = {
@@ -93,7 +165,7 @@ var levels = {
         },
         // Second level
         {
-            foreground: 'desert-goreground',
+            foreground: 'desert-foreground',
             background: 'clouds-background',
             entities: []
         },
@@ -194,5 +266,38 @@ var loader = {
                 loader.onload = undefined;
             }
         }
+    }
+}
+
+var mouse = {
+    x: 0,
+    y: 0,
+    down: false,
+    init: function () {
+        $('#gameCanvas').mousemove(mouse.mousemoveHandler);
+        $('#gameCanvas').mousedown(mouse.mousedownHandler);
+        $('#gameCanvas').mouseup(mouse.mouseupHandler);
+        $('#gameCanvas').mouseout(mouse.mouseupHandler);
+    },
+    mousemoveHandler: function (ev) {
+        var offset = $('#gameCanvas').offset();
+
+        mouse.x = ev.pageX - offset.left;
+        mouse.y = ev.pageY - offset.top;
+
+        if (mouse.down) {
+            mouse.dragging = true;
+        }
+    },
+
+    mousedownHandler: function (ev) {
+        mouse.down = true;
+        mouse.downX = mouse.x;
+        mouse.downY = mouse.y;
+        ev.originalEvent.preventDefault();
+    },
+    mouseupHandler: function (ev) {
+        mouse.down = false;
+        mouse.dragging = false;
     }
 }

@@ -54,7 +54,7 @@
 
 #scoreScreen {
   height: 60px;
-  /* font: 32px Comic Sans MS; */
+  font: 32px "Comic Sans MS";
   text-shadow: 0 0 2px #000;
   color: white;
 }
